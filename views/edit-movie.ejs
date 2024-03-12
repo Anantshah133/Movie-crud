@@ -1,0 +1,140 @@
+<%- include('./partials/header.ejs') %>
+    <div class='p-6 w-full xl:w-6/12'>
+        <div class="panel mt-2">
+            <div class='flex items-center justify-between mb-5'>
+                <h5 class="text-2xl text-primary font-semibold dark:text-white-light"><%= mode == 'edit' ? 'Edit' : 'View' %> Movie 📚</h5>
+            </div>
+            <div class="mb-5">
+                <form action="/movies/update" class="space-y-5" method="post" id="mainForm" enctype="multipart/form-data">
+                    <div>
+                        <label for="title" class="text-base font-semibold">Movie Title </label>
+                        <input id="title" name="title" type="text" class="form-input min-w-[20rem]" pattern="^\s*\S.*$" value="<%= movie.title %>" required />
+                    </div>
+                    <div>
+                        <label for="description" class="text-base font-semibold">Description </label>
+                        <input id="description" name="description" type="text" class="form-input min-w-[20rem]"
+                        pattern="^\s*\S.*$" value="<%= movie.description %>" required />
+                    </div>
+                    <div>
+                        <label for="genere" class="text-base font-semibold">Genere</label>
+                        <select class="form-select font-semibold text-gray-500" name="genere" id="genere" required>
+                            <option value="">Choose genere</option>
+                            <option <%= movie.genere == "romance" ? 'selected' : '' %> value="romance">Romance</option>
+                            <option <%= movie.genere == "action" ? 'selected' : '' %> value="action">Action</option>
+                            <option <%= movie.genere == "comedy" ? 'selected' : '' %> value="comedy">Comedy</option>
+                            <option <%= movie.genere == "horror" ? 'selected' : '' %> value="horror">Horror</option>
+                            <option <%= movie.genere == "sci" ? 'selected' : '' %> value="sci">Sci-fi</option>
+                            <option <%= movie.genere == "thriller" ? 'selected' : '' %> value="thriller">Thriller</option>
+                            <option <%= movie.genere == "historical" ? 'selected' : '' %> value="historical">Historical</option>
+                            <option <%= movie.genere == "biography" ? 'selected' : '' %> value="biography">Biography</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="movie-image" class="text-base font-semibold">Movie Image</label>
+                        <input id="movie-image" name="movie-image" type="file" class="form-input file:py-2 file:px-4 file:border-0 file:font-semibold p-0 file:bg-primary/90 ltr:file:mr-5 rtl:file:ml-5 file:text-white file:hover:bg-primary" onchange="readURL(this, 'srNoImg', 'imgErr')" />
+                        <img src="/assets/images/movie-images/<%= movie.image %>" class="mt-5 w-80 preview-img" alt="movie Image" id="srNoImg">
+                        <h3 id="imgErr" class="hidden error-elem">Please Select Image Files Only !</h3>
+                    </div>
+                    <div>
+                        <label for="movie-video" class="text-base font-semibold">Movie Video</label>
+                        <input id="movie-video" name="movie-video" type="file" class="form-input file:py-2 file:px-4 file:border-0 file:font-semibold p-0 file:bg-primary/90 ltr:file:mr-5 rtl:file:ml-5 file:text-white file:hover:bg-primary" onchange="readVideoURL(this, 'videoPreview', 'videoErr')" />
+                        <video autoplay controls id="videoPreview" src="/assets/images/movie-images/<%= movie.video %>" class="mt-5 w-80 preview-video"></video>
+                        <h3 id="videoErr" class="hidden error-elem">Please Select Video Files Only !</h3>
+                    </div>
+                    <div>
+                        <label for="ratings" class="text-base font-semibold">Ratings</label>
+                        <select class="form-select font-semibold text-gray-500" name="ratings" id="ratings" required>
+                            <option value="">Choose ratings</option>
+                            <% for(let i=1; i<=10; i++) { %>
+                                <option <%= movie.ratings == i ? 'selected' : '' %> value="<%= i %>"><%= i %></option>
+                            <% } %>
+                        </select>
+                    </div>
+                    <div x-data="cmplnDate">
+                        <label class="text-base font-semibold">Release Date </label>
+                        <input x-model="date2" name="release_date" id="release_date" class="form-input" value=""
+                        required />
+                    </div>
+
+                    <input type="hidden" value="<%= movie._id %>" name="id">
+                    <input type="hidden" value="<%= movie.image %>" name="old_image">
+                    <input type="hidden" value="<%= movie.video %>" name="old_video">
+
+                    <div class="relative flex align-middle gap-3 mt-7">
+                        <button type="submit" id="save" class="btn btn-primary">Update</button>
+                        <button type="button" class="btn btn-danger" onclick="window.location='/movies'">
+                            Close
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script>
+        function readURL(input, preview, errElement) {
+            if (input.files && input.files[0]) {
+                var filename = input.files[0].name;
+                var reader = new FileReader();
+                var extn = filename.split('.').pop().toLowerCase();
+                var allowedExtns = ["jpg", "jpeg", "png", "bmp", "webp"];
+
+                if (allowedExtns.includes(extn)) {
+                    var reader = new FileReader();
+                    reader.onload = function (e) {
+                        document.querySelector('#' + preview).src = e.target.result;
+                        document.getElementById(preview).style.display = "block";
+                    };
+                    reader.readAsDataURL(input.files[0]);
+                    document.getElementById(errElement).classList.add("hidden");
+                    document.getElementById('save').disabled = false;
+                } else {
+                    document.getElementById(preview).style.display = "none";
+                    document.getElementById(errElement).classList.remove("hidden");
+                    document.getElementById('save').disabled = true;
+                }
+            }
+        }
+
+        function readVideoURL(input, preview, errElement) {
+            if (input.files && input.files[0]) {
+                var filename = input.files[0].name;
+                var reader = new FileReader();
+                var extn = filename.split('.').pop().toLowerCase();
+                var allowedExtns = ["mp4", "avi", "mov", "wmv", "flv"];
+
+                if (allowedExtns.includes(extn)) {
+                    var reader = new FileReader();
+                    reader.onload = function (e) {
+                        document.querySelector('#' + preview).src = e.target.result;
+                        document.getElementById(preview).style.display = "block";
+                    };
+                    reader.readAsDataURL(input.files[0]);
+                    document.getElementById(errElement).classList.add("hidden");
+                    document.getElementById('save').disabled = false;
+                } else {
+                    document.getElementById(preview).style.display = "none";
+                    document.getElementById(errElement).classList.remove("hidden");
+                    document.getElementById('save').disabled = true;
+                }
+            }
+        }
+        
+        document.addEventListener("alpine:init", () => {
+            let todayDate = new Date();
+            let formattedToday = todayDate.toLocaleDateString('en-GB', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric',
+            }).split('/').join('-')
+            Alpine.data("cmplnDate", () => ({
+                date2: `<%= movie.release_date %>`,
+                init() {
+                    flatpickr(document.getElementById('release_date'), {
+                        dateFormat: 'd-m-Y',
+                        defaultDate: this.date2,
+                    })
+                }
+            }));
+        })
+    </script>
+<%- include('./partials/footer.ejs') %>

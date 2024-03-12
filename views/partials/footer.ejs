@@ -1,0 +1,56 @@
+</div>
+</div>
+
+<script src="/assets/js/alpine-collaspe.min.js"></script>
+<script src="/assets/js/alpine-persist.min.js"></script>
+<script defer src="/assets/js/alpine-ui.min.js"></script>
+<script defer src="/assets/js/alpine-focus.min.js"></script>
+<script defer src="/assets/js/alpine.min.js"></script>
+<script src="/assets/js/simple-datatables.js"></script>
+<script src="/assets/js/flatpickr.js"></script>
+<script src="/assets/js/custom.js"></script>
+<script defer src="/assets/js/apexcharts.js"></script>
+
+<script>
+    document.addEventListener('alpine:init', () => {
+        // sidebar section
+        Alpine.data('sidebar', () => ({
+            init() {
+                const selector = document.querySelector('.sidebar ul a[href="' + window.location.pathname + '"]');
+                if (selector) {
+                    selector.classList.add('active');
+                    const ul = selector.closest('ul.sub-menu');
+                    if (ul) {
+                        let ele = ul.closest('li.menu').querySelectorAll('.nav-link');
+                        if (ele) {
+                            ele = ele[0];
+                            setTimeout(() => {
+                                ele.click();
+                            });
+                        }
+                    }
+                }
+            },
+        }));
+    });
+    function getFullDateTime() {
+        const date = new Date();
+        const day = date.getDate();
+        const month = date.getMonth() + 1;
+        const year = date.getFullYear();
+        const hours = date.getHours();
+        const minutes = date.getMinutes();
+
+        const amPM = hours >= 12 ? 'PM' : 'AM';
+        const formattedHours = hours % 12 || 12;
+        const formattedMinutes = minutes < 10 ? '0' + minutes : minutes;
+        const formattedDay = day < 10 ? '0' + day : day;
+        const formattedMonth = month < 10 ? '0' + month : month;
+        const formattedDateTime = formattedDay + '-' + formattedMonth + '-' + year + ' ' + formattedHours + ':' + formattedMinutes + ' ' + amPM;
+        document.getElementById("fullDate").innerHTML = formattedDateTime;
+    }
+    getFullDateTime();
+</script>
+</body>
+
+</html>
