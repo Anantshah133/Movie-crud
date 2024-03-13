@@ -8,16 +8,16 @@
                 <form action="/movies/update" class="space-y-5" method="post" id="mainForm" enctype="multipart/form-data">
                     <div>
                         <label for="title" class="text-base font-semibold">Movie Title </label>
-                        <input id="title" name="title" type="text" class="form-input min-w-[20rem]" pattern="^\s*\S.*$" value="<%= movie.title %>" required />
+                        <input id="title" name="title" type="text" class="form-input min-w-[20rem]" pattern="^\s*\S.*$" value="<%= movie.title %>" <%= mode == 'view' ? 'readonly' : '' %> required />
                     </div>
                     <div>
                         <label for="description" class="text-base font-semibold">Description </label>
                         <input id="description" name="description" type="text" class="form-input min-w-[20rem]"
-                        pattern="^\s*\S.*$" value="<%= movie.description %>" required />
+                        pattern="^\s*\S.*$" value="<%= movie.description %>" <%= mode == 'view' ? 'readonly' : '' %> required />
                     </div>
                     <div>
                         <label for="genere" class="text-base font-semibold">Genere</label>
-                        <select class="form-select font-semibold text-gray-500" name="genere" id="genere" required>
+                        <select class="form-select font-semibold text-gray-500" name="genere" id="genere" required <%= mode == 'view' ? 'disabled' : '' %>>
                             <option value="">Choose genere</option>
                             <option <%= movie.genere == "romance" ? 'selected' : '' %> value="romance">Romance</option>
                             <option <%= movie.genere == "action" ? 'selected' : '' %> value="action">Action</option>
@@ -31,19 +31,19 @@
                     </div>
                     <div>
                         <label for="movie-image" class="text-base font-semibold">Movie Image</label>
-                        <input id="movie-image" name="movie-image" type="file" class="form-input file:py-2 file:px-4 file:border-0 file:font-semibold p-0 file:bg-primary/90 ltr:file:mr-5 rtl:file:ml-5 file:text-white file:hover:bg-primary" onchange="readURL(this, 'srNoImg', 'imgErr')" />
+                        <input id="movie-image" name="movie-image" type="file" class="form-input file:py-2 file:px-4 file:border-0 file:font-semibold p-0 file:bg-primary/90 ltr:file:mr-5 rtl:file:ml-5 file:text-white file:hover:bg-primary" onchange="readURL(this, 'srNoImg', 'imgErr')" <%= mode == 'view' ? 'disabled' : '' %> />
                         <img src="/assets/images/movie-images/<%= movie.image %>" class="mt-5 w-80 preview-img" alt="movie Image" id="srNoImg">
                         <h3 id="imgErr" class="hidden error-elem">Please Select Image Files Only !</h3>
                     </div>
                     <div>
                         <label for="movie-video" class="text-base font-semibold">Movie Video</label>
-                        <input id="movie-video" name="movie-video" type="file" class="form-input file:py-2 file:px-4 file:border-0 file:font-semibold p-0 file:bg-primary/90 ltr:file:mr-5 rtl:file:ml-5 file:text-white file:hover:bg-primary" onchange="readVideoURL(this, 'videoPreview', 'videoErr')" />
+                        <input id="movie-video" name="movie-video" type="file" class="form-input file:py-2 file:px-4 file:border-0 file:font-semibold p-0 file:bg-primary/90 ltr:file:mr-5 rtl:file:ml-5 file:text-white file:hover:bg-primary" onchange="readVideoURL(this, 'videoPreview', 'videoErr')" <%= mode == 'view' ? 'disabled' : '' %> />
                         <video autoplay controls id="videoPreview" src="/assets/images/movie-images/<%= movie.video %>" class="mt-5 w-80 preview-video"></video>
                         <h3 id="videoErr" class="hidden error-elem">Please Select Video Files Only !</h3>
                     </div>
                     <div>
                         <label for="ratings" class="text-base font-semibold">Ratings</label>
-                        <select class="form-select font-semibold text-gray-500" name="ratings" id="ratings" required>
+                        <select class="form-select font-semibold text-gray-500" name="ratings" id="ratings" required <%= mode == 'view' ? 'disabled' : '' %>>
                             <option value="">Choose ratings</option>
                             <% for(let i=1; i<=10; i++) { %>
                                 <option <%= movie.ratings == i ? 'selected' : '' %> value="<%= i %>"><%= i %></option>
@@ -53,14 +53,14 @@
                     <div x-data="cmplnDate">
                         <label class="text-base font-semibold">Release Date </label>
                         <input x-model="date2" name="release_date" id="release_date" class="form-input" value=""
-                        required />
+                        required <%= mode == 'view' ? 'disabled' : '' %> />
                     </div>
 
                     <input type="hidden" value="<%= movie._id %>" name="id">
                     <input type="hidden" value="<%= movie.image %>" name="old_image">
                     <input type="hidden" value="<%= movie.video %>" name="old_video">
 
-                    <div class="relative flex align-middle gap-3 mt-7">
+                    <div class="relative flex align-middle gap-3 mt-7 <%= mode == 'view' ? 'hidden' : '' %>">
                         <button type="submit" id="save" class="btn btn-primary">Update</button>
                         <button type="button" class="btn btn-danger" onclick="window.location='/movies'">
                             Close
